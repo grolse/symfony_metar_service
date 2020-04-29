@@ -7,10 +7,12 @@ namespace App\Service;
 use App\Entity\Condition;
 use App\Entity\Weather;
 use App\Entity\Wind;
+use App\Exception\IcaoCodeNotFoundException;
 use App\Repository\ConditionRepository;
 use App\Repository\WeatherRepository;
 use App\Repository\WindRepository;
 use MetarDecoder\Entity\DecodedMetar;
+use Symfony\Component\HttpFoundation\Response;
 
 class MetarService implements MetarServiceInterface
 {
@@ -45,9 +47,11 @@ class MetarService implements MetarServiceInterface
             ->setWeather($weather);
 
         $condition = new Condition();
+        $visibility = ($metar->getVisibility() != null)
+            ? $metar->getVisibility()->getVisibility()->getValue() : 9999;
         $condition->setPressure($metar->getPressure()->getValue())
             ->setTemperature($metar->getAirTemperature()->getValue())
-            ->setVisibility($metar->getVisibility()->getVisibility()->getValue())
+            ->setVisibility($visibility)
             ->setRawMetar($metar->getRawMetar())
             ->setWeather($weather);
 
@@ -59,12 +63,29 @@ class MetarService implements MetarServiceInterface
 
     public function getWeather(string $icaoCode): Weather
     {
-        // TODO: Implement getWeather() method.
+        $icaoCode = strtoupper($icaoCode);
+        $weather = $this->weatherRepository->findWeatherByIcao($icaoCode);
+        if (!$weather) {
+            throw new IcaoCodeNotFoundException(
+                Response::HTTP_NOT_FOUND,
+                sprintf('%s not found in database', $icaoCode)
+            );
+        }
+
+        return $weather;
     }
 
-    public function getWeatherByArray(array $icaoCodes)
+    public function getWeatherByArray(string $icaoCodes)
     {
-        // TODO: Implement getWeatherByArray() method.
+        $icaoCodes = explode(',',$icaoCodes);
+
+        $codes = "";
+        foreach ($icaoCodes as $code) {
+            $codes .= strtoupper("'$code',");
+        }
+        $codes = rtrim($codes, ',');
+
+        return $this->weatherRepository->findWeatherByIcaoCodes($codes);
     }
 
 }

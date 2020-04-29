@@ -4,10 +4,13 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="weather")
  * @ORM\Entity(repositoryClass="App\Repository\WeatherRepository")
+ *
+ * @Serializer\ExclusionPolicy("all")
  */
 class Weather
 {
@@ -15,11 +18,15 @@ class Weather
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     *
+     * @Serializer\Expose()
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=4, unique=true)
+     *
+     * @Serializer\Expose()
      */
     private $icaoCode;
 
@@ -27,13 +34,17 @@ class Weather
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Wind", mappedBy="weather", cascade={"persist"})
+     *
+     * @Serializer\Expose()
      */
     private $winds;
 
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Condition", mappedBy="airport", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Condition", mappedBy="weather", cascade={"persist"})
+     *
+     * @Serializer\Expose()
      */
     private $conditions;
 
@@ -61,11 +72,11 @@ class Weather
     }
 
     /**
-     * @return ArrayCollection
+     * @return array
      */
     public function getWinds(): ArrayCollection
     {
-        return $this->winds;
+        return $this->winds->toArray();
     }
 
     /**
@@ -85,11 +96,11 @@ class Weather
     }
 
     /**
-     * @return ArrayCollection
+     * @return array
      */
     public function getConditions(): ArrayCollection
     {
-        return $this->conditions;
+        return $this->conditions->toArray();
     }
 
     /**

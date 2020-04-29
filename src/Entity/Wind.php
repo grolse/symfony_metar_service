@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="winds")
  * @ORM\Entity(repositoryClass="App\Repository\WindRepository")
+ *
+ * @Serializer\ExclusionPolicy("all")
  */
 class Wind
 {
@@ -19,22 +22,30 @@ class Wind
 
     /**
      * @ORM\Column(type="integer")
+     *
+     * @Serializer\Expose()
      */
     private $heading;
 
     /**
      * @ORM\Column(type="integer")
+     *
+     * @Serializer\Expose()
      */
     private $speed;
 
     /**
      * @ORM\Column(type="integer")
+     *
+     * @Serializer\Expose()
      */
     private $gusts;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", name="created_at")
+     *
+     * @Serializer\Expose()
      */
     private $createdAt;
 

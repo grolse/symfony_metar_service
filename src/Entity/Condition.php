@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ConditionRepository")
  * @ORM\Table(name="conditions")
+ *
+ * @Serializer\ExclusionPolicy("all")
  */
 class Condition
 {
@@ -19,11 +22,15 @@ class Condition
 
     /**
      * @ORM\Column(type="integer")
+     *
+     * @Serializer\Expose()
      */
     private $temperature;
 
     /**
      * @ORM\Column(type="integer")
+     *
+     * @Serializer\Expose()
      */
     private $pressure;
 
@@ -31,11 +38,14 @@ class Condition
      * @var string
      *
      * @ORM\Column(type="string", length=255)
+     *
+     * @Serializer\Expose()
      */
     private $rawMetar;
 
     /**
      * @ORM\Column(type="integer")
+     * @Serializer\Expose()
      */
     private $visibility;
 

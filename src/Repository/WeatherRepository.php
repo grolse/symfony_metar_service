@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Weather;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +18,29 @@ class WeatherRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Weather::class);
+    }
+
+    /**
+     * @param string $icao
+     * @return Weather|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findWeatherByIcao(string $icao): ?Weather
+    {
+        return $this->createQueryBuilder('w')
+            ->where('w.icaoCode = :icaoCode')
+            ->setParameter('icaoCode', $icao)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findWeatherByIcaoCodes(string $icaoCodes)
+    {
+        return $this->createQueryBuilder('w')
+            ->where('w.icaoCode IN (:icaoCodes)')
+            ->setParameter('icaoCodes', $icaoCodes)
+            ->getQuery()
+            ->getResult();
     }
 
     public function save(Weather $weather)

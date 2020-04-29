@@ -26,8 +26,8 @@ interface MetarServiceInterface
 
     /**
      * Get weather by multiple airports.
-     * @param array $icaoCodes
+     * @param string $icaoCodes
      * @return mixed
      */
-    public function getWeatherByArray(array $icaoCodes);
+    public function getWeatherByArray(string $icaoCodes);
 }
