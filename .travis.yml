@@ -4,13 +4,13 @@ php:
 
 before_script:
   - composer install
-
+  - composer require doctrine/doctrine-fixtures-bundle --dev
 mysql:
   database: metar_test
   username: root
   encoding: utf8
 
 script:
-  - php bin/console doctrine:migrations:migration --env=ci -n
+  - php bin/console doctrine:migrations:migrate --env=ci -n
   - php bin/console doctrine:fixtures:load --env=ci -n
   - php bin/phpunit
