@@ -2,13 +2,13 @@ language: php
 php:
   - "7.4"
 
+services:
+  - mysql
+
 before_script:
   - composer install
   - composer require doctrine/doctrine-fixtures-bundle --dev
-mysql:
-  database: metar_test
-  username: root
-  encoding: utf8
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS metar_test;'
 
 script:
   - php bin/console doctrine:migrations:migrate --env=ci -n
